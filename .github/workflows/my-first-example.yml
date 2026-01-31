@@ -3,7 +3,7 @@ name: My First GitHub Actions Workflow
 on: push
 
 jobs:
-    first_job:
+    first-job:
         runs-on: ubuntu-latest
         steps:
         - name: Hellooooo
@@ -14,3 +14,13 @@ jobs:
 
         - name: List files
           run: ls
+        
+    Second-job:
+        runs-on: ubuntu-latest
+        steps:
+
+        - name: Checkout Step
+          uses: actions/checkout@v6
+
+        - name: List all the files in repository
+          run: ls -la
