@@ -1,44 +1,46 @@
-name: GitHub Actions Basics Demo
+name: Generate ASCII Artwork Workflow
 
-# 1️⃣ Create and Run Workflow
-# This workflow runs automatically on every push
+# This workflow runs whenever code is pushed to the repository
 on:
   push:
 
 jobs:
-  demo_job:
-    name: Demo Job for GitHub Actions Concepts
+  build_job_1:
+    # This job installs a third party library and generates a file
     runs-on: ubuntu-latest
-
     steps:
-      # 2️⃣ How to use an Action (Checkout action)
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      # Install cowsay package on the runner
+      - name: Install cowsay
+        run: sudo apt-get update && sudo apt-get install -y cowsay
 
-      # 3️⃣ Multiline Commands
-      - name: List Files and Read README
-        run: |
-          echo "My first GitHub Actions workflow"
-          echo "Listing files in the repository:"
-          ls -ltra
-          echo "Reading README.md file....."
-          cat README.md
+      # Generate ASCII art and save it to a file
+      - name: Generate ASCII message
+        run: cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" > dragon.txt
 
-      # 4️⃣ Install Third-Party Library
-      - name: Install cowsay (Third-party package)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cowsay
+      # Pause execution to simulate build time
+      - name: Pause build job
+        run: sleep 30
 
-      # Using installed library
-      - name: Generate ASCII Art using cowsay
-        run: |
-          cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" > dragon.txt
-          echo "Generated ASCII Art:"
-          cat dragon.txt
 
-      # 5️⃣ Execute Shell Script in Workflow
-      - name: Make shell script executable and run it
-        run: |
-          chmod +x ascii-script.sh
-          ./ascii-script.sh
+  test_job_2:
+    # This job runs only after build_job_1 completes successfully
+    needs: build_job_1
+    runs-on: ubuntu-latest
+    steps:
+      # Pause execution to simulate testing time
+      - name: Pause test job
+        run: sleep 10
+
+      # Verify that the generated file contains expected content
+      - name: Verify generated content
+        run: grep -i "dragon" dragon.txt
+
+
+  deploy_job_3:
+    # This job runs only after test_job_2 completes successfully
+    needs: test_job_2
+    runs-on: ubuntu-latest
+    steps:
+      # Display the final generated file
+      - name: Display ASCII file
+        run: cat dragon.txt
