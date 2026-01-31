@@ -1,26 +1,44 @@
-name: My First GitHub Actions Workflow
+name: GitHub Actions Basics Demo
 
-on: push
+# 1️⃣ Create and Run Workflow
+# This workflow runs automatically on every push
+on:
+  push:
 
 jobs:
-    first-job:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Hellooooo
-          run: echo "Hello from SK"
-        
-        - name: Checkout Repo
-          run: echo "Checking out repo"
+  demo_job:
+    name: Demo Job for GitHub Actions Concepts
+    runs-on: ubuntu-latest
 
-        - name: List files
-          run: ls
-        
-    Second-job:
-        runs-on: ubuntu-latest
-        steps:
+    steps:
+      # 2️⃣ How to use an Action (Checkout action)
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-        - name: Checkout Step
-          uses: actions/checkout@v6
+      # 3️⃣ Multiline Commands
+      - name: List Files and Read README
+        run: |
+          echo "My first GitHub Actions workflow"
+          echo "Listing files in the repository:"
+          ls -ltra
+          echo "Reading README.md file....."
+          cat README.md
 
-        - name: List all the files in repository
-          run: ls -la
+      # 4️⃣ Install Third-Party Library
+      - name: Install cowsay (Third-party package)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cowsay
+
+      # Using installed library
+      - name: Generate ASCII Art using cowsay
+        run: |
+          cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" > dragon.txt
+          echo "Generated ASCII Art:"
+          cat dragon.txt
+
+      # 5️⃣ Execute Shell Script in Workflow
+      - name: Make shell script executable and run it
+        run: |
+          chmod +x ascii-script.sh
+          ./ascii-script.sh
