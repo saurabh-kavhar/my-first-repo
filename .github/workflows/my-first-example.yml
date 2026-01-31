@@ -1,46 +1,57 @@
-name: Generate ASCII Artwork Workflow
+name: Passing Data Between Jobs Using Artifacts
 
 # This workflow runs whenever code is pushed to the repository
 on:
   push:
 
 jobs:
-  build_job_1:
-    # This job installs a third party library and generates a file
+  build_job:
+    # This job generates a file and uploads it as an artifact
     runs-on: ubuntu-latest
     steps:
-      # Install cowsay package on the runner
+      # Install cowsay package
       - name: Install cowsay
         run: sudo apt-get update && sudo apt-get install -y cowsay
 
-      # Generate ASCII art and save it to a file
-      - name: Generate ASCII message
+      # Generate ASCII content and save it to a file
+      - name: Generate ASCII file
         run: cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" > dragon.txt
 
-      # Pause execution to simulate build time
-      - name: Pause build job
-        run: sleep 30
+      # Upload the generated file as an artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ascii-artifact
+          path: dragon.txt
 
 
-  test_job_2:
-    # This job runs only after build_job_1 completes successfully
-    needs: build_job_1
+  test_job:
+    # This job depends on the build job and downloads the artifact
+    needs: build_job
     runs-on: ubuntu-latest
     steps:
-      # Pause execution to simulate testing time
-      - name: Pause test job
-        run: sleep 10
+      # Download the artifact created in the build job
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ascii-artifact
 
-      # Verify that the generated file contains expected content
-      - name: Verify generated content
+      # Verify the content of the downloaded file
+      - name: Verify artifact content
         run: grep -i "dragon" dragon.txt
 
 
-  deploy_job_3:
-    # This job runs only after test_job_2 completes successfully
-    needs: test_job_2
+  deploy_job:
+    # This job depends on the test job and uses the same artifact
+    needs: test_job
     runs-on: ubuntu-latest
     steps:
-      # Display the final generated file
-      - name: Display ASCII file
+      # Download the artifact again for deployment step
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ascii-artifact
+
+      # Display the final file content
+      - name: Display artifact content
         run: cat dragon.txt
