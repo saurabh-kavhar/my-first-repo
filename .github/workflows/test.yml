@@ -1,7 +1,9 @@
 name: Execute shell script
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
     actions_job:
