@@ -1,4 +1,4 @@
-name: Workflow with multiple Jobs
+name: Storing workflow data as artifacts Upload / Download
 
 on:
   push:
@@ -10,18 +10,26 @@ jobs:
     steps:
       - name: Install Cowsay Program
         run: sudo apt-get install cowsay -y
+
       - name: Execute Cowsay Command
         run: cowsay -f dragon "Run for cover, I am a DRAGON... RAWR" >> dragon.txt
-      - name: Sleep for 30 seconds
-        run: sleep 30
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+            name: dragon-text-file
+            path: ./dragon.txt
 
 
   test_job_2:
     needs: build_job_1
     runs-on: ubuntu-latest
     steps:
-      - name: Sleep for 10 seconds
-        run: sleep 10
+      - name: Download Artifact from build_job_1
+        uses: actions/download-artifact@v3
+        with:
+            name: dragon-text-file
+
       - name: Test File Exists
         run: grep -i "dragon" dragon.txt
 
@@ -30,7 +38,15 @@ jobs:
     needs: test_job_2
     runs-on: ubuntu-latest
     steps:
-      - name: Read File
-        run: cat dragon.txt
+      - name: Download Dragon text file
+        uses: actions/download-artifact@v3
+        with:
+            name: dragon-text-file
+        
+      - name: Display Downloaded File content
+        run: |
+          ls -ltra
+          cat dragon.txt
+
       - name: Deploy
         run: echo "Deploying..."
