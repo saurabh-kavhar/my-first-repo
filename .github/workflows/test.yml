@@ -1,0 +1,17 @@
+name: My First Workflow
+
+on:
+  push
+
+jobs:
+    first_job:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Say Hello
+          run: echo "Hello From SK..."
+        
+    Second_job:
+        runs-on: windows-latest
+        steps:
+        - name: Test Winodws 
+          run: echo "Hello From Windows..."
