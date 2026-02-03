@@ -1,17 +1,17 @@
-name: My First Workflow
+name: Actions and Usage of Checkout Action
 
 on:
   push
 
 jobs:
-    first_job:
+    actions_job:
         runs-on: ubuntu-latest
         steps:
-        - name: Say Hello
-          run: echo "Hello From SK..."
+        - name: Checkout Repository
+          uses: actions/checkout@v6
         
-    Second_job:
-        runs-on: windows-latest
-        steps:
-        - name: Test Winodws 
-          run: echo "Hello From Windows..."
+        - name: Check the files from repo
+          run: ls
+        
+        - name: Read file from repo
+          run: cat README.md
