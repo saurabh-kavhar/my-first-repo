@@ -1,4 +1,4 @@
-name: Execute shell script
+name: Wokrflows With Multiple Jobs 
 
 on:
   push:
@@ -6,19 +6,22 @@ on:
       - main
 
 jobs:
-    actions_job:
+    build_job_1:
         runs-on: ubuntu-latest
         steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v6
-        
-        - name: List Repository
-          run: ls -ltra
+        - name: Running job 1
+          run: echo "Hello from job 1"
 
-        - name: Permission to Shell Script
-          run: chmod +x ./ascii-script.sh
-
-        - name: Execute Shell Script
-          run: sh ./ascii-script.sh
+    build_job_2:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Running Job 2
+              run: echo "Hello from job 2"
+    
+    build_job_3:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Running Job 3
+              run: echo "Hello from Job 3"
         
     
