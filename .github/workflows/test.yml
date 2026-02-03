@@ -1,4 +1,4 @@
-name: Running Multi-Line Command
+name: Executing a Third-Party CLI
 
 on:
   push
@@ -10,10 +10,12 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v6
         
-        - name: Check the files from repo
+        - name: Install Cosway
+          run: sudo apt-get update && sudo apt-get install -y cowsay
+
+        - name: Generate ASCII Artwork
           run: |
-            echo "Running Multi-Line Commands Workflow"
-            ls -la
-            sleep 10s
-            echo "Read file from repository"
-            cat README.md
+            cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" >> dragon.txt
+            cat dragon.txt
+        
+    
